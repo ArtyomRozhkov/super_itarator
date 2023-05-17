@@ -2,9 +2,9 @@ package com.example;
 
 import java.util.Collection;
 
-public class SuperIterator implements Iterator {
+public class SuperIterator implements java.util.Iterator<Integer> {
 
-    public SuperIterator(Collection<Iterator> iterators){
+    public SuperIterator(Collection<java.util.Iterator<Integer>> iterators){
         throw new RuntimeException("Not implemented yet");
     }
 
@@ -14,7 +14,7 @@ public class SuperIterator implements Iterator {
     }
 
     @Override
-    public int next() {
+    public Integer next() {
         throw new RuntimeException("Not implemented yet");
     }
 }
