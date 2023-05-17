@@ -2,7 +2,6 @@ package com.example;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 public class SuperIterator implements java.util.Iterator<Integer> {
@@ -39,12 +38,14 @@ public class SuperIterator implements java.util.Iterator<Integer> {
             }
         }
 
+        Integer minValue = iterWithMinValue.getCurrentValue();
+
         if (iterWithMinValue.getIterator().hasNext()) {
             iterWithMinValue.setCurrentValue(iterWithMinValue.getIterator().next());
         } else {
             values.remove(iterWithMinValue);
         }
 
-        return iterWithMinValue.getCurrentValue();
+        return minValue;
     }
 }

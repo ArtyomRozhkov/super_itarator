@@ -25,7 +25,7 @@ class SuperIteratorTest {
 
         SuperIterator sut = new SuperIterator(List.of(iterator1, iterator2, iterator3));
 
-        List<Integer> expectedList = List.of(1, 2, 3, 4, 7, 9);
+        List<Integer> expectedList = List.of(1, 2, 3, 4, 5, 7, 9);
 
         List<Integer> actualList = new ArrayList<>();
         sut.forEachRemaining(actualList::add);
