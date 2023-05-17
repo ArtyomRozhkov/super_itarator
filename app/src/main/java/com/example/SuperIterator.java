@@ -2,27 +2,28 @@ package com.example;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
-public class SuperIterator implements java.util.Iterator<Integer> {
+public class SuperIterator implements Iterator<Integer> {
 
-    private List<IteratorInfo> values = new ArrayList<>();
+    private final List<IteratorInfo> iteratorInfos = new ArrayList<>();
 
-    public SuperIterator(Collection<java.util.Iterator<Integer>> iterators) {
+    public SuperIterator(Collection<Iterator<Integer>> iterators) {
         if (iterators == null) {
             throw new RuntimeException("Collection of iterators is null");
         }
 
         iterators.forEach(iterator -> {
             if (iterator != null && iterator.hasNext()) {
-                values.add(new IteratorInfo(iterator.next(), iterator));
+                iteratorInfos.add(new IteratorInfo(iterator.next(), iterator));
             }
         });
     }
 
     @Override
     public boolean hasNext() {
-        return !values.isEmpty();
+        return !iteratorInfos.isEmpty();
     }
 
     @Override
@@ -31,21 +32,30 @@ public class SuperIterator implements java.util.Iterator<Integer> {
             throw new RuntimeException("The list of values is empty");
         }
 
-        IteratorInfo iterWithMinValue = values.get(0);
-        for (IteratorInfo currentIterator : values) {
+        IteratorInfo iteratorWithMinValue = findIteratorWithMinValue();
+        Integer minValue = iteratorWithMinValue.getCurrentValue();
+        updateIteratorOrRemoveIfEmpty(iteratorWithMinValue);
+
+        return minValue;
+    }
+
+    private IteratorInfo findIteratorWithMinValue() {
+        IteratorInfo iterWithMinValue = iteratorInfos.get(0);
+
+        for (IteratorInfo currentIterator : iteratorInfos) {
             if (currentIterator.getCurrentValue() < iterWithMinValue.getCurrentValue()) {
                 iterWithMinValue = currentIterator;
             }
         }
 
-        Integer minValue = iterWithMinValue.getCurrentValue();
+        return iterWithMinValue;
+    }
 
+    private void updateIteratorOrRemoveIfEmpty(IteratorInfo iterWithMinValue) {
         if (iterWithMinValue.getIterator().hasNext()) {
             iterWithMinValue.setCurrentValue(iterWithMinValue.getIterator().next());
         } else {
-            values.remove(iterWithMinValue);
+            iteratorInfos.remove(iterWithMinValue);
         }
-
-        return minValue;
     }
 }
