@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -73,4 +77,35 @@ class SuperIteratorTest {
         assertThrows(RuntimeException.class, () -> new SuperIterator(null));
     }
 
+    @Test
+    @DisplayName("Бесконечный итератор")
+    void testWithInfinityIterator() throws ExecutionException, InterruptedException {
+        InfinityIterator infinityIterator = new InfinityIterator();
+        SuperIterator sut = new SuperIterator(List.of(infinityIterator));
+
+        var completableFuture = CompletableFuture.supplyAsync(() -> {
+            while (sut.hasNext()) {
+                assertThat(sut.next()).isEqualTo(1);
+            }
+            return null;
+        });
+
+        try {
+            completableFuture.get(1, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+        }
+    }
+
+    public class InfinityIterator implements Iterator<Integer> {
+
+        @Override
+        public boolean hasNext() {
+            return true;
+        }
+
+        @Override
+        public Integer next() {
+            return 1;
+        }
+    }
 }
